@@ -1,0 +1,276 @@
+TCP/IP
+
+
+TCP - Transmission Control Protocol - allows computers to connect and share information. Data that is shared between the computers is reliable and ordered. This is accomplished by sharing synchronization numbers and between the two machines. The number is incremented on each message.
+A set of rules that describes how computers talk to each other over the internet
+Server and client talk to each other.
+Client asks for the connection and server waits for incoming connection.
+
+Handshake 
+The client sends a SYN message to the server
+The server responds with a SYN-ACK to the client
+The client responds with an ACK to the server
+
+SYN
+The client sends a SYN message to the server along with a random number(A). This number will be used to synch messages from the client to the server. This allows th server to know if nay messages are dropped and allows the server to keep the messages in order. This step proves that the server is able to receive info from the client.
+
+SYN-ACK (synchronization acknowledged)
+The server sends a SYN-ACK to the client with the clients SYN number plus 1 (A+1). It also sends its own random number to the client (B). This number will be used to synch messages from the server to the client. This allows the client to know if any messages are dropped and allows the client to keep the messages in order.
+
+ACK 
+Client sends back number A+1 as well as the clients number B+1 back to the server.
+This is prior to request/resposnse. After this req/resp can be done.
+
+WIRESHARK will show all of this information and show all the processes of your computer. Will show computer sending and receiving packets.
+
+Tcp is concerned with packaging messages. IP is the truck that drives it to its destination.
+
+HTTP - built on top of TCP
+Hypertext Transfer Protocol - is an application protocol used to send information across the web. It follows a standard flow:
+
+1)Client creates a connection to a server
+2)Client sends a request to the server
+
+Example
+
+GET / HTTP/1.1. (method, protocol)
+Host: example.com. (header key: value)
+Accept-Language: us-en. (Header key: value)
+
+When you put google.com in browser a text message is sent to google that is structured in the way above
+
+3. The server sends a response to the client
+
+HTTP/1.1 200 OK (protocol, status code (200 is successful 404 error code), status message) next lines are all headers
+Date: Sat, 09 Oct 2010 14:28:02 GMT
+Server: Apache
+Last-Modified: Tue, 25 Jun 2019 15:57:17 GMT
+Accept-Ranges: bytes. (Accepts bytes)
+Content-Length: 269
+Content-Type: text/html. ( response body type)
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <h1>Example</h1>
+</body>
+</html>
+
+Above is the text message the server sends back. Your browser renders this to a webpage
+
+
+4. Close the connection
+
+When you visit a website browser caches the files it receives from response
+
+Cache is a temporal or ephemeral place to store things
+It saves files it receives from a server and puts them on your computer
+It doesn’t have to make a network request to get those files, can bypass that
+
+Status codes (errors ) tell you something why didn’t work
+400 bad request
+401 unauthorized 
+403 authorized but not allowed
+404 not found resource is not found
+504 timeout, server took to long to respond
+DDOS is when hackers overload servers with too many requests and then 504 appears.
+
+
+Listening
+
+When you are ready to start your server you have to listen on a port. A port is like a door, incoming requests will hit a port and then be handled by the process listening on that port.
+
+http port 80
+Https port 443
+ A lot of ports below 1000 are used by your system/cpu to do things. Best to make it higher. Ports can go to about 65000.
+
+
+
+Building server file
+
+Cd ../04_tcp-http
+Nom init alchemthing
+Empty
+
+Add server.js file
+
+Const net = require(‘net’);  comes with node
+
+Const server = net.createServer((connectClient) => {
+Npx nodemon server.js
+
+Can use this even if nodemon not setup
+Npx lets you run packages without having to install them
+
+main: server.js
+Nom run start:watch 
+
+Thunder client is like postman extension built in vs code.
+
+connectedClient can use whatever for parameter name
+The parameter is the client that is connecting to our server
+
+Can send messages to connectedClient with 
+connectedClient.write( 
+
+)
+
+server.listen(5050)
+Net is from node.js net library
+net.createServer
+
+This is an event handler
+Basically saying server OnConnection
+Do something
+
+Just like button Onclick
+
+Whenever we get a connection we run this function
+
+From screenshot (socket: net.ssocket) is connect client => void means does not return anything
+Do typescript primer to better understand hover pop up bubbles. Use typescript language. Can be very helpful
+
+Inside create server function
+Put event listener to listen for any data we want to receive. An event handler
+connectedClient.on()
+on() a certain event do something
+connectedClient.on(‘data’, (data) => {
+console.log(data.tostring());
+
+
+Content- length: characters
+Host: 
+
+
+Made get request from /dogs
+
+Data we get is buffer. Change it toString then parse it on /.split(\\r\n)
+To get an array of strings from the request
+
+Can restructure array by
+Const [method, path] = parsedRequest[0].split(‘ ‘);
+This splits the first item in the array and splits them on open space and names them in the array.
+This is giving names to index 0 and index 1. This is restructuring the array.
+
+Now you can do 
+if( method === “GET’ && path === ‘/greet’) {
+//send a response
+connecctedClient.write (;….)
+}
+
+Browsers use get method when press enter sends get request to server
+
+Because content-type: text/plain is why it works
+
+Then can do 
+Else if ( method ===‘get && path ===‘/dog’){
+connectedClient.write(‘HTTP/1.1 200 OK\r
+Content-type: text/html\r
+\r
+<!DOCTYPE html>
+<html lang=‘en’>
+<head>
+	<meta charset =‘utf8’>
+	<title>Dog!</title>
+</head>
+<body>
+	<img src=‘pictureofdog” alt=‘ruby’ />
+</body>
+<html>
+‘);
+}
+
+Instad of handwriting html
+
+emmet built into vscode
+
+Else if ( method === get && path ===/dog.json’) {
+connectedClient.write(HTTP/1.1 200 OK
+Content-type: application/json
+{ “name”: “ruby”, “age”: 11, “weight”: “11 lbs”})
+}
+
+Else {
+connectedClient.write(‘HttP/1.1 404 NOT FOUND’)
+Content-type: text/plain\r
+
+Not found : ( ‘)
+
+
+LAB
+Instad of using bootstrap
+Use get started link
+Click it and pull up GitHub repository
+Click use this template
+Name it something 
+And create repo from that template
+
+Constant length: use contentbody.length
+
+Testing
+Use supertest
+
+
+Supertest starts the server in testing, so takeout server.listen
+
+App.js
+Take code from server.js paste it in app.js and export it
+
+In server.js import app.js
+Const app = requier(‘app)
+
+App.listen(5050)
+
+This tests app.js rather then server.js
+
+
+Inside __tests__
+App.test.js
+
+Const request = require (‘supertest);
+Npm I—save-dev supertest. Installs supertest
+
+Const app = require(app)
+
+describe(‘app routes’, () => {
+it(‘gets a dog from /dog, async() => {
+Const res = await request(app).get(‘/dog)
+
+res.body only works with json
+Use res.text for any response that isn’t JSON
+
+expect(res.text).toEqual(html …..
+
+
+)
+
+
+Make sure /r are at create response.test.js
+
+
+Build out tests for app.js
+Use tests that are there for everything else
+
+Builds
+1 hour exercises from 1-2pm
+Pull up build create template and then submit link to repo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
